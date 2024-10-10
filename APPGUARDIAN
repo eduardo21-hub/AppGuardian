@@ -1,195 +1,130 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.ArrayList
+import java.util.Scanner
 
 // Classe para representar um contato de emergência
-class Contato {
-    private String nome;
-    private String telefone;
-    private String categoria;
-
-    public Contato(String nome, String telefone, String categoria) {
-        this.nome = nome;
-        this.telefone = telefone;
-        this.categoria = categoria;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
-    @Override
-    public String toString() {
-        return "Nome: " + nome + ", Telefone: " + telefone + ", Categoria: " + categoria;
-    }
-}
+internal data class Contato(var nome: String, var telefone: String, var categoria: String)
 
 // Classe para gerenciar os contatos de emergência
-class GerenciadorDeContatos {
-    private ArrayList<Contato> contatos;
+internal class GerenciadorDeContatos {
+    private val contatos: ArrayList<Contato> = ArrayList()
 
-    public GerenciadorDeContatos() {
-        contatos = new ArrayList<>();
+    fun adicionarContato(contato: Contato) {
+        contatos.add(contato)
     }
 
-    public void adicionarContato(Contato contato) {
-        contatos.add(contato);
+    fun removerContato(nome: String) {
+        contatos.removeIf { contato -> contato.nome == nome }
     }
 
-    public void removerContato(String nome) {
-        contatos.removeIf(contato -> contato.getNome().equals(nome));
-    }
-
-    public void listarContatos() {
+    fun listarContatos() {
         if (contatos.isEmpty()) {
-            System.out.println("Nenhum contato cadastrado.");
+            println("Nenhum contato cadastrado.")
         } else {
-            for (Contato contato : contatos) {
-                System.out.println(contato);
+            for (contato in contatos) {
+                println(contato)
             }
         }
     }
 
-    public Contato buscarContato(String nome) {
-        for (Contato contato : contatos) {
-            if (contato.getNome().equals(nome)) {
-                return contato;
-            }
-        }
-        return null;
+    fun buscarContato(nome: String): Contato? {
+        return contatos.find { it.nome == nome }
     }
 }
 
 // Classe para gerenciar mensagens de emergência
-class MensagemEmergencia {
-    private String tipo;
-    private String mensagem;
-    private ArrayList<Contato> destinatarios;
+internal class MensagemEmergencia(val tipo: String, val mensagem: String) {
+    private val destinatarios: ArrayList<Contato> = ArrayList()
 
-    public MensagemEmergencia(String tipo, String mensagem) {
-        this.tipo = tipo;
-        this.mensagem = mensagem;
-        this.destinatarios = new ArrayList<>();
+    fun adicionarDestinatario(contato: Contato) {
+        destinatarios.add(contato)
     }
 
-    public void adicionarDestinatario(Contato contato) {
-        destinatarios.add(contato);
-    }
-
-    public void enviarMensagens() {
+    fun enviarMensagens() {
         if (destinatarios.isEmpty()) {
-            System.out.println("Nenhum destinatário definido.");
+            println("Nenhum destinatário definido.")
         } else {
-            for (Contato contato : destinatarios) {
-                System.out.println("Enviando mensagem para " + contato.getNome() + " (" + contato.getTelefone() + "): " + mensagem);
+            for (contato in destinatarios) {
+                println("Enviando mensagem para ${contato.nome} (${contato.telefone}): $mensagem")
             }
         }
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public String getMensagem() {
-        return mensagem;
     }
 }
 
 // Classe principal do aplicativo
-class GuardianApp {
-
-    public static void main(String[] args) {
-        GerenciadorDeContatos gerenciadorDeContatos = new GerenciadorDeContatos();
-        Scanner scanner = new Scanner(System.in);
+internal object GuardianApp {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val gerenciadorDeContatos = GerenciadorDeContatos()
+        val scanner = Scanner(System.`in`)
 
         while (true) {
-            System.out.println("Bem-vindo ao Guardian!");
-            System.out.println("1. Adicionar Contato");
-            System.out.println("2. Remover Contato");
-            System.out.println("3. Listar Contatos");
-            System.out.println("4. Enviar Mensagem de Emergência");
-            System.out.println("5. Sair");
+            println("Bem-vindo ao Guardian!")
+            println("1. Adicionar Contato")
+            println("2. Remover Contato")
+            println("3. Listar Contatos")
+            println("4. Enviar Mensagem de Emergência")
+            println("5. Sair")
 
-            int opcao = scanner.nextInt();
-            scanner.nextLine();  // Consumir a nova linha após o número
+            val opcao = scanner.nextInt()
+            scanner.nextLine() // Consumir a nova linha após o número
 
-            switch (opcao) {
-                case 1:
+            when (opcao) {
+                1 -> {
                     // Adicionar contato
-                    System.out.println("Digite o nome do contato:");
-                    String nome = scanner.nextLine();
-                    System.out.println("Digite o telefone do contato:");
-                    String telefone = scanner.nextLine();
-                    System.out.println("Digite a categoria (família, amigos, autoridades, etc.):");
-                    String categoria = scanner.nextLine();
-                    Contato novoContato = new Contato(nome, telefone, categoria);
-                    gerenciadorDeContatos.adicionarContato(novoContato);
-                    break;
+                    println("Digite o nome do contato:")
+                    val nome = scanner.nextLine()
+                    println("Digite o telefone do contato:")
+                    val telefone = scanner.nextLine()
+                    println("Digite a categoria (família, amigos, autoridades, etc.):")
+                    val categoria = scanner.nextLine()
+                    val novoContato = Contato(nome, telefone, categoria)
+                    gerenciadorDeContatos.adicionarContato(novoContato)
+                }
 
-                case 2:
+                2 -> {
                     // Remover contato
-                    System.out.println("Digite o nome do contato a ser removido:");
-                    String nomeRemover = scanner.nextLine();
-                    gerenciadorDeContatos.removerContato(nomeRemover);
-                    break;
+                    println("Digite o nome do contato a ser removido:")
+                    val nomeRemover = scanner.nextLine()
+                    gerenciadorDeContatos.removerContato(nomeRemover)
+                }
 
-                case 3:
+                3 -> {
                     // Listar contatos
-                    gerenciadorDeContatos.listarContatos();
-                    break;
+                    gerenciadorDeContatos.listarContatos()
+                }
 
-                case 4:
+                4 -> {
                     // Enviar mensagem de emergência
-                    System.out.println("Digite o tipo de emergência (roubo, acidente, sequestro, etc.):");
-                    String tipoEmergencia = scanner.nextLine();
-                    System.out.println("Digite a mensagem de emergência:");
-                    String mensagem = scanner.nextLine();
-                    MensagemEmergencia msgEmergencia = new MensagemEmergencia(tipoEmergencia, mensagem);
+                    println("Digite o tipo de emergência (roubo, acidente, sequestro, etc.):")
+                    val tipoEmergencia = scanner.nextLine()
+                    println("Digite a mensagem de emergência:")
+                    val mensagem = scanner.nextLine()
+                    val msgEmergencia = MensagemEmergencia(tipoEmergencia, mensagem)
 
                     // Adicionar destinatários
-                    System.out.println("Digite o nome do contato para enviar a mensagem (ou 'fim' para parar):");
+                    println("Digite o nome do contato para enviar a mensagem (ou 'fim' para parar):")
                     while (true) {
-                        String nomeContato = scanner.nextLine();
-                        if (nomeContato.equals("fim")) break;
-                        Contato contato = gerenciadorDeContatos.buscarContato(nomeContato);
+                        val nomeContato = scanner.nextLine()
+                        if (nomeContato == "fim") break
+                        val contato = gerenciadorDeContatos.buscarContato(nomeContato)
                         if (contato != null) {
-                            msgEmergencia.adicionarDestinatario(contato);
+                            msgEmergencia.adicionarDestinatario(contato)
                         } else {
-                            System.out.println("Contato não encontrado.");
+                            println("Contato não encontrado.")
                         }
                     }
                     // Enviar mensagens
-                    msgEmergencia.enviarMensagens();
-                    break;
+                    msgEmergencia.enviarMensagens()
+                }
 
-                case 5:
+                5 -> {
                     // Sair
-                    System.out.println("Saindo do aplicativo Guardian. Fique seguro!");
-                    scanner.close();
-                    System.exit(0);
-                    break;
+                    println("Saindo do aplicativo Guardian. Fique seguro!")
+                    scanner.close()
+                    return // Saia do programa
+                }
 
-                default:
-                    System.out.println("Opção inválida.");
+                else -> println("Opção inválida.")
             }
         }
     }
