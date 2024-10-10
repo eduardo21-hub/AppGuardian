@@ -1,0 +1,196 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+// Classe para representar um contato de emergência
+class Contato {
+    private String nome;
+    private String telefone;
+    private String categoria;
+
+    public Contato(String nome, String telefone, String categoria) {
+        this.nome = nome;
+        this.telefone = telefone;
+        this.categoria = categoria;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    @Override
+    public String toString() {
+        return "Nome: " + nome + ", Telefone: " + telefone + ", Categoria: " + categoria;
+    }
+}
+
+// Classe para gerenciar os contatos de emergência
+class GerenciadorDeContatos {
+    private ArrayList<Contato> contatos;
+
+    public GerenciadorDeContatos() {
+        contatos = new ArrayList<>();
+    }
+
+    public void adicionarContato(Contato contato) {
+        contatos.add(contato);
+    }
+
+    public void removerContato(String nome) {
+        contatos.removeIf(contato -> contato.getNome().equals(nome));
+    }
+
+    public void listarContatos() {
+        if (contatos.isEmpty()) {
+            System.out.println("Nenhum contato cadastrado.");
+        } else {
+            for (Contato contato : contatos) {
+                System.out.println(contato);
+            }
+        }
+    }
+
+    public Contato buscarContato(String nome) {
+        for (Contato contato : contatos) {
+            if (contato.getNome().equals(nome)) {
+                return contato;
+            }
+        }
+        return null;
+    }
+}
+
+// Classe para gerenciar mensagens de emergência
+class MensagemEmergencia {
+    private String tipo;
+    private String mensagem;
+    private ArrayList<Contato> destinatarios;
+
+    public MensagemEmergencia(String tipo, String mensagem) {
+        this.tipo = tipo;
+        this.mensagem = mensagem;
+        this.destinatarios = new ArrayList<>();
+    }
+
+    public void adicionarDestinatario(Contato contato) {
+        destinatarios.add(contato);
+    }
+
+    public void enviarMensagens() {
+        if (destinatarios.isEmpty()) {
+            System.out.println("Nenhum destinatário definido.");
+        } else {
+            for (Contato contato : destinatarios) {
+                System.out.println("Enviando mensagem para " + contato.getNome() + " (" + contato.getTelefone() + "): " + mensagem);
+            }
+        }
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public String getMensagem() {
+        return mensagem;
+    }
+}
+
+// Classe principal do aplicativo
+class GuardianApp {
+
+    public static void main(String[] args) {
+        GerenciadorDeContatos gerenciadorDeContatos = new GerenciadorDeContatos();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("Bem-vindo ao Guardian!");
+            System.out.println("1. Adicionar Contato");
+            System.out.println("2. Remover Contato");
+            System.out.println("3. Listar Contatos");
+            System.out.println("4. Enviar Mensagem de Emergência");
+            System.out.println("5. Sair");
+
+            int opcao = scanner.nextInt();
+            scanner.nextLine();  // Consumir a nova linha após o número
+
+            switch (opcao) {
+                case 1:
+                    // Adicionar contato
+                    System.out.println("Digite o nome do contato:");
+                    String nome = scanner.nextLine();
+                    System.out.println("Digite o telefone do contato:");
+                    String telefone = scanner.nextLine();
+                    System.out.println("Digite a categoria (família, amigos, autoridades, etc.):");
+                    String categoria = scanner.nextLine();
+                    Contato novoContato = new Contato(nome, telefone, categoria);
+                    gerenciadorDeContatos.adicionarContato(novoContato);
+                    break;
+
+                case 2:
+                    // Remover contato
+                    System.out.println("Digite o nome do contato a ser removido:");
+                    String nomeRemover = scanner.nextLine();
+                    gerenciadorDeContatos.removerContato(nomeRemover);
+                    break;
+
+                case 3:
+                    // Listar contatos
+                    gerenciadorDeContatos.listarContatos();
+                    break;
+
+                case 4:
+                    // Enviar mensagem de emergência
+                    System.out.println("Digite o tipo de emergência (roubo, acidente, sequestro, etc.):");
+                    String tipoEmergencia = scanner.nextLine();
+                    System.out.println("Digite a mensagem de emergência:");
+                    String mensagem = scanner.nextLine();
+                    MensagemEmergencia msgEmergencia = new MensagemEmergencia(tipoEmergencia, mensagem);
+
+                    // Adicionar destinatários
+                    System.out.println("Digite o nome do contato para enviar a mensagem (ou 'fim' para parar):");
+                    while (true) {
+                        String nomeContato = scanner.nextLine();
+                        if (nomeContato.equals("fim")) break;
+                        Contato contato = gerenciadorDeContatos.buscarContato(nomeContato);
+                        if (contato != null) {
+                            msgEmergencia.adicionarDestinatario(contato);
+                        } else {
+                            System.out.println("Contato não encontrado.");
+                        }
+                    }
+                    // Enviar mensagens
+                    msgEmergencia.enviarMensagens();
+                    break;
+
+                case 5:
+                    // Sair
+                    System.out.println("Saindo do aplicativo Guardian. Fique seguro!");
+                    scanner.close();
+                    System.exit(0);
+                    break;
+
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        }
+    }
+}
